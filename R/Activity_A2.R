@@ -50,11 +50,8 @@ knnFit <- train(Diabetes_012 ~ ., data = entrenamiento , method = "knn", trContr
 
 plot(knnFit)
 
-# Crear predicciones
+# Crear predicciones- confusion matrix
 knnPredict <- predict(knnFit, newdata = prueba)
-
-# Creates the confusion matrix
-
 confusionMatrix(data = knnPredict, reference = prueba$Diabetes_012)
 
 ### segundo experimento
@@ -69,3 +66,21 @@ knnFit2 <- train(Diabetes_012 ~ ., data = entrenamiento2, method = "knn", trCont
           , tuneLength = 40)
 
 plot(knnFit2)
+
+# Crear predicciones 2 - confusion matrix 2
+knnPredict2 <- predict(knnFit2, newdata = prueba2)
+confusionMatrix(data = knnPredict2, reference = prueba2$Diabetes_012)
+
+### Tercer experimento
+
+predictors_to_remove2 <- c("PhysHlth", "Fruits","ChoclCheck", "MentHlth","Veggies")
+entrenamiento3 <- entrenamiento2[, !(names(entrenamiento2) %in% predictors_to_remove2)]
+prueba3 <- prueba2[, !(names(prueba2) %in% predictors_to_remove2)]
+
+control2 <- trainControl(method = "repeatedcv", number = 10, repeats = 3)
+knnFit3 <- train(Diabetes_012 ~ ., data = entrenamiento3, method = "knn", trControl = control2
+          , preProcess = c("range") # c("center", "scale") for z-score
+          , tuneLength = 20)
+
+plot(knnFit3)
+
