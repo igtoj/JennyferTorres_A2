@@ -236,4 +236,10 @@ prueba <- data_stratified2[-sample.index, c(predictors, "BMI"), drop = FALSE]
 
 ins_model <- lm(BMI ~ ., data = entrenamiento)
 summary(ins_model)
+# entrenamiento del modelo
+train.control <- trainControl(method = "cv", number = 10 )
+model <- train(BMI ~ ., data = entrenamiento, method = "lm",
+               trControl = train.control)
 
+# Summarize the results
+print(model)
