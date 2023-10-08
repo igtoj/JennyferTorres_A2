@@ -252,5 +252,21 @@ entrenamiento2 <- entrenamiento[, !(names(entrenamiento) %in% predictors_to_remo
 prueba2 <- prueba[, !(names(prueba) %in% predictors_to_remove)]
 
 ins_model <- lm(BMI ~ ., data = entrenamiento2)
+summary(ins_model)
 
+# entrenamiento del modelo
+entrenamiento <- trainControl(method = "cv", number = 5)
+model <- train(BMI ~ ., data = entrenamiento2, method = "lm",
+               trControl = train.control)
+
+# Summarize the results
+print(model)
+
+#### Tercero
+predictors_to_remove <- c("Veggies", "HvyAlcoholConsump","Income", "Stroke", "NoDocbcCost")
+
+entrenamiento3 <- entrenamiento2[, !(names(entrenamiento2) %in% predictors_to_remove)]
+prueba3 <- prueba2[, !(names(prueba2) %in% predictors_to_remove)]
+
+ins_model <- lm(BMI ~ ., data = entrenamiento3)
 summary(ins_model)
