@@ -243,3 +243,14 @@ model <- train(BMI ~ ., data = entrenamiento, method = "lm",
 
 # Summarize the results
 print(model)
+
+#### second
+
+predictors_to_remove <- c("AnyHealthcare", "CholCheck", "MentHlth", "Education", "Sex")
+
+entrenamiento2 <- entrenamiento[, !(names(entrenamiento) %in% predictors_to_remove)]
+prueba2 <- prueba[, !(names(prueba) %in% predictors_to_remove)]
+
+ins_model <- lm(BMI ~ ., data = entrenamiento2)
+
+summary(ins_model)
