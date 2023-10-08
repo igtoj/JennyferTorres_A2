@@ -221,5 +221,19 @@ plot(knnFit3)
 knnPredict3 <- predict(knnFit3, newdata = prueba3)
 confusionMatrix(data = knnPredict3, reference = prueba3$Sex)
 
+### regresion lineal modelo BMI #
 
+set.seed(27)
+data_stratified2 <- data[sample(nrow(data), 3000), ]
+
+predictors <- colnames(data_stratified2)[-5]
+sample.index <- sample(1:nrow(data_stratified2),nrow(data_stratified2) * 0.7,
+                replace = FALSE)
+
+
+entrenamiento <- data_stratified2[sample.index, c(predictors, "BMI"), drop = FALSE]
+prueba <- data_stratified2[-sample.index, c(predictors, "BMI"), drop = FALSE]
+
+ins_model <- lm(BMI ~ ., data = entrenamiento)
+summary(ins_model)
 
