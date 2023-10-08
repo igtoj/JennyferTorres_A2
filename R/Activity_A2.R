@@ -22,3 +22,15 @@ pairs.panels(data_ [c("Age", "BMI", "GenHlth", "Fruits")],
              pch = 21,
              bg = c("red", "green3")[unclass(data_$Diabetes_012)])
 
+# KNN Models and Experiments#
+
+## selection of 1500 samples of each factor of the dataset
+set.seed(27)
+data_stratified <- data %>% group_by(Diabetes_012) %>%
+  sample_n(1500, replace = TRUE) %>% ungroup()
+
+sample.index <- sample(1:nrow(data_stratified)
+                ,nrow(data_stratified)*0.7 ,replace = F)
+
+
+predictors <- c("GenHlth", "MentHlth", "PhysHlth", "DiffWalk", "Sex", "Age", "Education", "Income","HighBP", "HighChol", "CholCheck", "BMI", "Smoker", "Stroke", "HeartDiseaseorAttack", "PhysActivity", "Fruits", "Veggies", "HvyAlcoholConsump", "AnyHealthcare", "NoDocbcCost")
