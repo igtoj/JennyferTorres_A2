@@ -38,6 +38,14 @@ predictors <- c("GenHlth", "MentHlth", "PhysHlth", "DiffWalk", "Sex", "Age", "Ed
 entrenamiento <- data_stratified[sample.index, c(predictors, "Diabetes_012"), drop = FALSE]
 prueba<- data_stratified[-sample.index, c(predictors, "Diabetes_012"), drop = FALSE]
 
-
 entrenamiento$Diabetes_012 <- factor(entrenamiento$Diabetes_012)
 prueba$Diabetes_012 <- factor(prueba$Diabetes_012)
+
+# Entrenamiento k-NN
+
+control <- trainControl(method = "cv", p = 0.75)
+knnFit <- train(Diabetes_012 ~ ., data = entrenamiento , method = "knn", trControl = control
+        , preProcess = c("range") # c("center", "scale") for z-score
+                , tuneLength = 60)
+
+plot(knnFit)
