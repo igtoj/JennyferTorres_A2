@@ -226,7 +226,7 @@ set.seed(27)
 data_stratified2 <- data[sample(nrow(data), 3000), ]
 
 predictors <- colnames(data_stratified2)[-5]
-sample.index <- sample(1:nrow(data_stratified2),nrow(data_stratified2) * 0.7,
+sample.index <- sample(1:nrow(data_stratified2),nrow(data_stratified2) * 0.75,
                 replace = FALSE)
 
 
@@ -273,6 +273,65 @@ summary(ins_model)
 # entrenamiento modelo
 entrenamiento <- trainControl(method = "repeatedcv", number = 10, repeats = 3)
 model <- train(BMI ~ ., data = entrenamiento3, method = "lm",
+               trControl = train.control)
+# Summarize the results
+print(model)
+
+
+
+# Regresión lineal MentHlth #
+
+set.seed(27)
+data_stratified2 <- data[sample(nrow(data), 3000), ]
+
+predictors <- colnames(data_stratified2)[-5]
+sample.index <- sample(1:nrow(data_stratified2),nrow(data_stratified2) * 0.75,
+                       replace = FALSE)
+
+entrenamiento <- data_stratified2[sample.index, c(predictors, "MentHlth"), drop = FALSE]
+prueba <- data_stratified2[-sample.index, c(predictors, "MentHlth"), drop = FALSE]
+
+ins_model <- lm(MentHlth ~ ., data = entrenamiento)
+summary(ins_model)
+# entrenamiento del modelo
+train.control <- trainControl(method = "cv", number = 10 )
+model <- train(MentHlth ~ ., data = entrenamiento, method = "lm",
+               trControl = train.control)
+
+# Summarize the results
+print(model)
+
+#### second
+
+predictors_to_remove <- c("AnyHealthcare", "CholCheck", "MentHlth", "Education", "Sex")
+
+entrenamiento2 <- entrenamiento[, !(names(entrenamiento) %in% predictors_to_remove)]
+prueba2 <- prueba[, !(names(prueba) %in% predictors_to_remove)]
+
+ins_model <- lm(MentHlth ~.,data = entrenamiento2)
+
+summary(ins_model)
+
+# entrenamiento del modelo
+entrenamiento <- trainControl(method = "cv", number = 5)
+model <- train(MentHlth ~ ., data = entrenamiento2, method = "lm",
+               trControl = train.control)
+
+# Summarize the results
+print(model)
+
+#### Tercero
+predictors_to_remove <- c("Veggies", "HvyAlcoholConsump","Income", "Stroke", "NoDocbcCost")
+
+entrenamiento3 <- entrenamiento2[, !(names(entrenamiento2) %in% predictors_to_remove)]
+prueba3 <- prueba2[, !(names(prueba2) %in% predictors_to_remove)]
+
+ins_model <- lm(MentHlth ~ ., data = entrenamiento3)
+summary(ins_model)
+
+# entrenamiento modelo
+entrenamiento <- trainControl(method = "repeatedcv", number = 10, repeats = 3)
+model <- train(MentHlth ~ ., data = entrenamiento3, method = "lm",
                trControl = train.control)
 # Summarize the results
 print(model)
