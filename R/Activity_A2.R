@@ -153,7 +153,6 @@ plot(knnFit3)
 # Crear predicciones 3 - confusion matrix
 knnPredict3 <- predict(knnFit3, newdata = prueba3)
 confusionMatrix(data = knnPredict3, reference = prueba3$HeartDiseaseorAttack)
-# selection of 1500 samples of each factor of the dataset
 
 
 #KNN Models and Experiments to Find Sex #
@@ -270,3 +269,11 @@ prueba3 <- prueba2[, !(names(prueba2) %in% predictors_to_remove)]
 
 ins_model <- lm(BMI ~ ., data = entrenamiento3)
 summary(ins_model)
+
+# entrenamiento modelo
+entrenamiento <- trainControl(method = "repeatedcv", number = 10, repeats = 3)
+model <- train(BMI ~ ., data = entrenamiento3, method = "lm",
+               trControl = train.control)
+# Summarize the results
+print(model)
+
