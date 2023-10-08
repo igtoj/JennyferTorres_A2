@@ -32,5 +32,12 @@ data_stratified <- data %>% group_by(Diabetes_012) %>%
 sample.index <- sample(1:nrow(data_stratified)
                 ,nrow(data_stratified)*0.7 ,replace = F)
 
-
 predictors <- c("GenHlth", "MentHlth", "PhysHlth", "DiffWalk", "Sex", "Age", "Education", "Income","HighBP", "HighChol", "CholCheck", "BMI", "Smoker", "Stroke", "HeartDiseaseorAttack", "PhysActivity", "Fruits", "Veggies", "HvyAlcoholConsump", "AnyHealthcare", "NoDocbcCost")
+
+# data inicial
+entrenamiento <- data_stratified[sample.index, c(predictors, "Diabetes_012"), drop = FALSE]
+prueba<- data_stratified[-sample.index, c(predictors, "Diabetes_012"), drop = FALSE]
+
+
+entrenamiento$Diabetes_012 <- factor(entrenamiento$Diabetes_012)
+prueba$Diabetes_012 <- factor(prueba$Diabetes_012)
