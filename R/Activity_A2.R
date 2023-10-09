@@ -23,7 +23,6 @@ pairs.panels(data_ [c("Age", "BMI", "GenHlth", "Fruits")],
              bg = c("red", "green3")[unclass(data_$Diabetes_012)])
 
 # KNN Models and Experiments Diabetes#
-
 # selection of 1500 samples of each factor of the dataset
 set.seed(27)
 data_stratified <- data %>% group_by(Diabetes_012) %>%
@@ -230,7 +229,6 @@ summary(ins_model)
 train.control <- trainControl(method = "cv", number = 10 )
 model <- train(BMI ~ ., data = entrenamiento, method = "lm",
                trControl = train.control)
-
 # Summarize the results
 print(model)
 
@@ -248,7 +246,6 @@ summary(ins_model)
 entrenamiento <- trainControl(method = "cv", number = 5)
 model <- train(BMI ~ ., data = entrenamiento2, method = "lm",
                trControl = train.control)
-
 # Summarize the results
 print(model)
 
@@ -288,7 +285,6 @@ summary(ins_model)
 train.control <- trainControl(method = "cv", number = 10 )
 model <- train(MentHlth ~ ., data = entrenamiento, method = "lm",
                trControl = train.control)
-
 # Summarize the results
 print(model)
 
@@ -307,7 +303,6 @@ summary(ins_model)
 entrenamiento <- trainControl(method = "cv", number = 5)
 model <- train(MentHlth ~ ., data = entrenamiento2, method = "lm",
                trControl = train.control)
-
 # Summarize the results
 print(model)
 
@@ -346,7 +341,6 @@ summary(ins_model)
 train.control <- trainControl(method = "cv", number = 10 )
 model <- train(PhysHlth ~ ., data = entrenamiento, method = "lm",
                trControl = train.control)
-
 # Summarize the results
 print(model)
 
@@ -365,7 +359,6 @@ summary(ins_model)
 entrenamiento <- trainControl(method = "cv", number = 5)
 model <- train(PhysHlth ~ ., data = entrenamiento2, method = "lm",
                trControl = train.control)
-
 # Summarize the results
 print(model)
 
