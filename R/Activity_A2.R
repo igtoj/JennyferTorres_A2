@@ -303,7 +303,7 @@ print(model)
 
 #### second
 
-predictors_to_remove <- c("AnyHealthcare", "CholCheck", "MentHlth", "Education", "Sex")
+predictors_to_remove <- c("BMI", "HeartDiseaseorAttack", "Stroke", "PhysActivity", "CholCheck")
 
 entrenamiento2 <- entrenamiento[, !(names(entrenamiento) %in% predictors_to_remove)]
 prueba2 <- prueba[, !(names(prueba) %in% predictors_to_remove)]
@@ -321,7 +321,7 @@ model <- train(MentHlth ~ ., data = entrenamiento2, method = "lm",
 print(model)
 
 #### Tercero
-predictors_to_remove <- c("Veggies", "HvyAlcoholConsump","Income", "Stroke", "NoDocbcCost")
+predictors_to_remove <- c("Veggies", "Education","Diabetes_012", "HighBP", "HighChol")
 
 entrenamiento3 <- entrenamiento2[, !(names(entrenamiento2) %in% predictors_to_remove)]
 prueba3 <- prueba2[, !(names(prueba2) %in% predictors_to_remove)]
