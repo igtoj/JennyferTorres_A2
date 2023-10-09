@@ -336,3 +336,61 @@ model <- train(MentHlth ~ ., data = entrenamiento3, method = "lm",
 # Summarize the results
 print(model)
 
+
+# Linear regression model PhysHlth #
+
+set.seed(27)
+data_stratified2 <- data[sample(nrow(data), 3000), ]
+
+predictors <- colnames(data_stratified2)[-5]
+sample.index <- sample(1:nrow(data_stratified2),nrow(data_stratified2) * 0.75,
+                       replace = FALSE)
+
+entrenamiento <- data_stratified2[sample.index, c(predictors, "PhysHlth"), drop = FALSE]
+prueba <- data_stratified2[-sample.index, c(predictors, "PhysHlth"), drop = FALSE]
+
+ins_model <- lm(PhysHlth ~ ., data = entrenamiento)
+summary(ins_model)
+# entrenamiento del modelo
+train.control <- trainControl(method = "cv", number = 10 )
+model <- train(PhysHlth ~ ., data = entrenamiento, method = "lm",
+               trControl = train.control)
+
+# Summarize the results
+print(model)
+
+#### second
+
+predictors_to_remove <- c("Sex", "Diabetes_012", "Education", "CholCheck", "Smoker")
+
+entrenamiento2 <- entrenamiento[, !(names(entrenamiento) %in% predictors_to_remove)]
+prueba2 <- prueba[, !(names(prueba) %in% predictors_to_remove)]
+
+ins_model <- lm(PhysHlth ~.,data = entrenamiento2)
+
+summary(ins_model)
+
+# entrenamiento del modelo
+entrenamiento <- trainControl(method = "cv", number = 5)
+model <- train(PhysHlth ~ ., data = entrenamiento2, method = "lm",
+               trControl = train.control)
+
+# Summarize the results
+print(model)
+
+#### Tercero
+predictors_to_remove <- c("BMI", "HeartDiseaseorAttack", "PhysActivity", "Veggies", "Stroke")
+
+entrenamiento3 <- entrenamiento2[, !(names(entrenamiento2) %in% predictors_to_remove)]
+prueba3 <- prueba2[, !(names(prueba2) %in% predictors_to_remove)]
+
+ins_model <- lm(PhysHlth ~ ., data = entrenamiento3)
+summary(ins_model)
+
+# entrenamiento modelo
+entrenamiento <- trainControl(method = "repeatedcv", number = 10, repeats = 3)
+model <- train(PhysHlth ~ ., data = entrenamiento3, method = "lm",
+               trControl = train.control)
+# Summarize the results
+print(model)
+
