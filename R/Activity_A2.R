@@ -47,7 +47,6 @@ control <- trainControl(method = "cv", p = 0.75)
 knnFit <- train(Diabetes_012 ~ ., data = entrenamiento , method = "knn", trControl = control
         , preProcess = c("range") # c("center", "scale") for z-score
                 , tuneLength = 60)
-
 plot(knnFit)
 
 # Crear predicciones- confusion matrix
@@ -64,7 +63,6 @@ control <- trainControl(method = "cv", number = 5)
 knnFit2 <- train(Diabetes_012 ~ ., data = entrenamiento2, method = "knn", trControl = control
           , preProcess = c("range") # c("center", "scale") for z-score
           , tuneLength = 40)
-
 plot(knnFit2)
 
 # Crear predicciones 2 - confusion matrix 2
@@ -81,7 +79,6 @@ control2 <- trainControl(method = "repeatedcv", number = 10, repeats = 3)
 knnFit3 <- train(Diabetes_012 ~ ., data = entrenamiento3, method = "knn", trControl = control2
           , preProcess = c("range") # c("center", "scale") for z-score
           , tuneLength = 20)
-
 plot(knnFit3)
 
 # Crear predicciones 3 - confusion matrix
@@ -89,7 +86,7 @@ knnPredict3 <- predict(knnFit3, newdata = prueba3)
 confusionMatrix(data = knnPredict3, reference = prueba3$Diabetes_012)
 
 
-#KNN Models and Experiments to Find HeartDiseaseorAttack
+#KNN Models HeartDiseaseorAttack#
 
 # selection of 1500 samples of each factor of the dataset
 set.seed(27)
@@ -113,7 +110,6 @@ control <- trainControl(method = "cv", p = 0.75)
 knnFit <- train(HeartDiseaseorAttack ~ ., data = entrenamiento , method = "knn", trControl = control
                 , preProcess = c("range") # c("center", "scale") for z-score
                 , tuneLength = 60)
-
 plot(knnFit)
 
 # Crear predicciones- confusion matrix
@@ -130,7 +126,6 @@ control <- trainControl(method = "cv", number = 5)
 knnFit2 <- train(HeartDiseaseorAttack ~ ., data = entrenamiento2, method = "knn", trControl = control
                  , preProcess = c("range") # c("center", "scale") for z-score
                  , tuneLength = 40)
-
 plot(knnFit2)
 
 # Crear predicciones 2 - confusion matrix 2
@@ -147,7 +142,6 @@ control2 <- trainControl(method = "repeatedcv", number = 10, repeats = 3)
 knnFit3 <- train(HeartDiseaseorAttack ~ ., data = entrenamiento3, method = "knn", trControl = control2
                  , preProcess = c("range") # c("center", "scale") for z-score
                  , tuneLength = 20)
-
 plot(knnFit3)
 
 # Crear predicciones 3 - confusion matrix
@@ -179,7 +173,6 @@ control <- trainControl(method = "cv", p = 0.75)
 knnFit <- train(Sex ~ ., data = entrenamiento , method = "knn", trControl = control
                 , preProcess = c("range") # c("center", "scale") for z-score
                 , tuneLength = 60)
-
 plot(knnFit)
 
 # Crear predicciones- confusion matrix
@@ -196,7 +189,6 @@ control <- trainControl(method = "cv", number = 5)
 knnFit2 <- train(Sex~ ., data = entrenamiento2, method = "knn", trControl = control
                  , preProcess = c("range") # c("center", "scale") for z-score
                  , tuneLength = 40)
-
 plot(knnFit2)
 
 # Crear predicciones 2 - confusion matrix 2
@@ -213,7 +205,6 @@ control2 <- trainControl(method = "repeatedcv", number = 10, repeats = 3)
 knnFit3 <- train(Sex ~ ., data = entrenamiento3, method = "knn", trControl = control2
                  , preProcess = c("range") # c("center", "scale") for z-score
                  , tuneLength = 20)
-
 plot(knnFit3)
 
 # Crear predicciones 3 - confusion matrix
