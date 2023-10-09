@@ -1,0 +1,155 @@
+---
+title: "kNN, Linear regression, and multilinear regression"
+author: "Jennyfer Iglandini Torres Piraquive 84031"
+date: "2023-10-08"
+output:
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+Three models will be developed using KNN, linear and multilinear regression with the data from the dataset "diabetes_012_health_indicators_BRFSS2015.csv", in order to choose the model that gives the best results as required. The dataset has variables related to health, such as diseases (diabetes, hypertension, cholesterol, coronary heart disease), aspects related to mass and height (BMI), characteristics such as smoking, physical activity, vegetable or fruit consumption, gender, age, stroke, physical, mental health and other such variables.
+
+###### For more information about the dataset, please refer to: <https://www.kaggle.com/datasets/alexteboul/diabetes-health-indicators-dataset>
+
+## First part Data exploration and data wrangling
+
+Download the libraries, (tidyverse) which promotes the concept of "ordered data", (caret) is a set of functions designed to streamline the process of creating predictive models, (class)(gmodels) and (psych), all to make the code to be created work well.
+
+The Second thing that was done was to load the dataset that had previously been downloaded to the computer.
+
+```{r}
+folder<-dirname(rstudioapi::getSourceEditorContext()$path)
+parentFolder <-dirname(folder)
+data <- read.csv(paste0(parentFolder,"/Dataset/diabetes_012.csv"))
+```
+
+so:
+
+-   **`folder <- dirname(rstudioapi::getSourceEditorContext()$path)`**: Specifies the location in which the current script directory is located.
+
+-   **`parentFolder <- dirname(folder)`**:Gets the parent directory of the current directory.
+
+-   **`data <- read.csv(paste0(parentFolder,"/Dataset/diabetes_012.csv"))`**: Reads the CSV file named "diabetes_012.csv" located in the "Dataset" directory, and loads the data into the **`data`** variable. All these processes are linked one after the other
+
+```{r}
+data$Diabetes_012 <- ifelse(data$Diabetes_012 == 0, 0, 1)
+set.seed(27)
+data_ <- data[sample(nrow(data), 3000), ]
+
+table(data_$Sex)
+table(data_$Smoker)
+table(data_$CholCheck)
+
+```
+
+1.  We convert the variable "Diabetes_012" into a binary variable where 0 represents the absence of diabetes and 1 represents the presence of diabetes in the dataset. We set a random seed (27) to ensure reproducibility of the results and alignment with the report. A subset of the data is created to explore the data in a lighter and more efficient way. Next, we compute the frequency table for the variables "Sex", "Smoker" and "CholCheck" in the "data" dataset.
+
+2.  From the previous data we can identify that the majority of the sample will be women and non-smokers, but it is expected that the group that has undergone cholesterol checks in the last 5 years is older. This process will give us an idea of the data set to interpret in future results.
+
+```{r}
+pairs.panels(data_ [c("Age", "BMI", "GenHlth", "Fruits")],
+             pch = 21,
+             bg = c("red", "green3")[unclass(data_$Diabetes_012)])
+```
+
+El código **`pairs.panels`** se utiliza para crear una serie de diagramas de dispersión e histogramas que muestran las relaciones entre las variables seleccionadas y sus distribuciones. Aquí hay una explicación detallada del código:
+
+-   **`data_[c("Edad", "IMC", "Educación", "GenHlth")]`**: Selecciona las columnas "Edad", "IMC" (Índice de Masa Corporal), "Educación" y " GenHlth" (Salud general) del conjunto de datos **`data_`**, **`pch = 21`**: establece el tipo de punto en los diagramas de dispersión. En este caso se utiliza un punto en forma de círculo con un borde y **`bg = c("red", "green3", "blue", "orange", "amarillo")[unclass(data_$Diabetes_012)]`**: Define el color de fondo de los puntos en base a la Variable "Diabetes_012". Los puntos se colorearán dependiendo de si la variable "Diabetes_012" es 0 o 1. Regarding observations about the distributions:
+
+The "Age" variable shows a normal distribution, meaning that the ages are fairly evenly distributed around the mean. This feature is important in certain statistical analyses, as some methods require data to be normally distributed to be valid.
+
+On the other hand, BMI has a distribution skewed to the left, indicating that most people have lower Body Mass Index values. This suggests that there is a concentration of individuals with a lower BMI in the sample.
+
+## Second part KNN MODEL
+
+### KNN Models and Experiments to Find Diabetes
+
+```{r}
+set.seed(27)
+data_stratified <- data %>% group_by(Diabetes_012) %>%
+  sample_n(1500, replace = TRUE) %>% ungroup()
+
+sample.index <- sample(1:nrow(data_stratified)
+                ,nrow(data_stratified)*0.75 ,replace = F)
+
+predictors <- c("GenHlth", "MentHlth", "PhysHlth", "DiffWalk", "Sex", "Age", "Education", "Income","HighBP", "HighChol", "CholCheck", "BMI", "Smoker", "Stroke", "HeartDiseaseorAttack", "PhysActivity", "Fruits", "Veggies", "HvyAlcoholConsump", "AnyHealthcare", "NoDocbcCost")
+
+# data inicial
+entrenamiento <- data_stratified[sample.index, c(predictors, "Diabetes_012"), drop = FALSE]
+prueba<- data_stratified[-sample.index, c(predictors, "Diabetes_012"), drop = FALSE]
+
+entrenamiento$Diabetes_012 <- factor(entrenamiento$Diabetes_012)
+prueba$Diabetes_012 <- factor(prueba$Diabetes_012)
+```
+
+The first step is to prepare the data. At this stage all variables are considered except "Diabetes", which is the variable to be experimented with. To ensure consistent results, a specific random seed, set.seed(27), is defined.
+
+The data is then divided into balanced subsets based on the variable "Diabetes_012," using a process called stratification. Of these subsets, 75% of the data is randomly chosen for training, identified as sample.index.
+
+The predictor variables chosen for the analysis are specified and stored in the 'predictors' list. Then, the ¨entrenamiento¨ data set, called training, is created. Includes selected predictor variables and treats "Diabetes_012" as a categorical factor.
+
+A similar approach is taken to construct the ¨prueba¨ set,test. This code prepares the data for machine learning by dividing it into training and test sets, while also selecting relevant predictor variables. Additionally, using a fixed random seed ensures that analysis results can be reproduced consistently.
+
+```{r}
+control <- trainControl(method = "cv", p = 0.75)
+knnFit <- train(Diabetes_012 ~ ., data = entrenamiento , method = "knn", trControl = control
+        , preProcess = c("range") # c("center", "scale") for z-score
+                , tuneLength = 60)
+plot(knnFit)
+
+```
+
+First, the model is trained using the designated training data set (train.data), where "Diabetes_012" is the target variable and all available predictor variables are included (denoted by "." indicating all predictors).
+
+*TrainControl:* In this step the control parameters for training the model are configured. Cross validation (method = "cv") is used with a 75% data partition assigned for training (p = 0.75).
+
+*Train:* This function starts training the k-NN model with the specified parameters. It uses the training data set, uses the "knn" method and incorporates the previously defined control parameters. The tuneLength parameter is set to 60, indicating that 60 iterations will be performed to identify the optimal value of k.
+
+*plot(knnFit)*: This line of code generates a graph illustrating the performance of the trained k-NN model.
+
+```{r results= FALSE}
+# Crear predicciones- confusion matrix
+knnPredict <- predict(knnFit, newdata = prueba)
+confusionMatrix(data = knnPredict, reference = prueba$Diabetes_012)
+```
+
+The predict function is used to predict the values of the variable "Diabetes_012" in new data using the pre-trained k-NN model (knnFit) and the test set (test.data). Predictions are saved in the knnPredict variable.
+
+To evaluate the performance of the k-NN model, the confusionMatrix function is used to create a confusion matrix. This function evaluates how well the model predictions match the actual values and takes two arguments as input.
+
+```{r echo= FALSE}
+# Crear predicciones- confusion matrix
+knnPredict <- predict(knnFit, newdata = prueba)
+confusionMatrix(data = knnPredict, reference = prueba$Diabetes_012)
+```
+
+The confusion matrix summarizes the performance of the model in classifying instances into two classes (0 and 1). In it, the rows represent the predicted classes (0 and 1), while the columns represent the actual classes (also 0 and 1). The four values in the matrix indicate True Negatives (TN, 330 instances correctly predicted as 0), False Positives (FP, 122 instances incorrectly predicted as 1), False Negatives (FN, 116 instances incorrectly predicted as 0), and True Positives (TP , 332 instances correctly predicted as 1). The accuracy of the model is 73.56%, which means that 73.56% of the predictions made by the model are correct, thus evaluating the overall accuracy of the model.
+
+Kappa Index: The Kappa index (Kappa) is a measure of inter-rater agreement, in this case, the agreement between the model predictions and the actual classes. Adjust the precision based on the possibility of random agreement and take values between -1 and 1. In this case, Kappa is 0.4319
+
+A Kappa of 1 indicates perfect agreement, a Kappa of 0 indicates agreement equivalent to chance agreement, a Kappa less than 0 indicates agreement worse than chance.
+
+In this case, a Kappa of 0.4319 indicates moderate agreement between the model predictions and the actual classes. This value is not bad but it can be improved.
+
+### Second experiment
+
+```{r}
+predictors_to_remove <- c("AnyHealthcare", "NoDocbcCost", "DiffWalk", "Education", "Income")
+entrenamiento2 <- entrenamiento[, !(names(entrenamiento) %in% predictors_to_remove)]
+prueba2 <- prueba[, !(names(prueba) %in% predictors_to_remove)]
+
+control <- trainControl(method = "cv", number = 5)
+knnFit2 <- train(Diabetes_012 ~ ., data = entrenamiento2, method = "knn", trControl = control
+          , preProcess = c("range") # c("center", "scale") for z-score
+          , tuneLength = 40)
+plot(knnFit2)
+```
+
+
+
+
