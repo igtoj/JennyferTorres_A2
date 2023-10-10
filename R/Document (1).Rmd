@@ -342,5 +342,6 @@ R-squared value equal in all experiments.
 
 The lowest MAE is also obtained by *Model 2*, indicating that it has the smallest absolute prediction errors.
 
+the three models presented perform perfectly in terms of fit to the data, as they have an R-squared of 1 and errors (RMSE and MAE) close to zero. But, these results are extremely good and could indicate an overfitting of the model to the training data.
 
 
