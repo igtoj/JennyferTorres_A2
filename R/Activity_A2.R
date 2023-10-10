@@ -268,10 +268,10 @@ print(model)
 
 # Regresión lineal MentHlth #
 
-set.seed(27)
+set.seed(1)
 data_stratified2 <- data[sample(nrow(data), 3000), ]
 
-predictors <- colnames(data_stratified2)[-5]
+predictors <- colnames(data_stratified2)[-16]
 sample.index <- sample(1:nrow(data_stratified2),nrow(data_stratified2) * 0.75,
                        replace = FALSE)
 
@@ -327,7 +327,7 @@ print(model)
 set.seed(27)
 data_stratified2 <- data[sample(nrow(data), 3000), ]
 
-predictors <- colnames(data_stratified2)[-5]
+predictors <- colnames(data_stratified2)[-17]
 sample.index <- sample(1:nrow(data_stratified2),nrow(data_stratified2) * 0.75,
                        replace = FALSE)
 
@@ -337,7 +337,7 @@ prueba <- data_stratified2[-sample.index, c(predictors, "PhysHlth"), drop = FALS
 ins_model <- lm(PhysHlth ~ ., data = entrenamiento)
 summary(ins_model)
 # entrenamiento del modelo
-train.control <- trainControl(method = "cv", number = 10 )
+train.control <- trainControl(method = "cv", number = 20 )
 model <- train(PhysHlth ~ ., data = entrenamiento, method = "lm",
                trControl = train.control)
 # Summarize the results
