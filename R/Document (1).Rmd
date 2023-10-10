@@ -250,3 +250,97 @@ Model 2 also performs well and model 3 is slightly less accurate. However, model
 
 
 **regresion lineal modelo BMI**
+
+This part of the code has aspects such as: 
+
+**Data Sampling**: 3000 rows are randomly selected from the dataset and stored in data_estratificada2.
+
+**Feature Selection**: All columns except the 5th one are chosen as predictors and stored in the predictors variable. The 5th column ("BMI") is selected as the target variable.
+
+**Train-Test Split**: The data is split into training (train.data) and testing (test.data) sets using a 70-30% ratio.
+
+**Initial Linear Regression Model**: An initial linear regression model (ins_model) is created using the training data to predict BMI based on all predictors. A summary of this model is displayed.
+
+**Model Training**: A linear regression model is trained using 10-fold cross-validation (trainControl) on the training data. The data is split into 10 subsets, and the model is trained and evaluated 10 times, each time using a different subset for validation.
+
+```{r results= FALSE}
+set.seed(27)
+data_stratified2 <- data[sample(nrow(data), 3000), ]
+
+predictors <- colnames(data_stratified2)[-5]
+sample.index <- sample(1:nrow(data_stratified2),nrow(data_stratified2) * 0.75,
+                replace = FALSE)
+
+
+entrenamiento <- data_stratified2[sample.index, c(predictors, "BMI"), drop = FALSE]
+prueba <- data_stratified2[-sample.index, c(predictors, "BMI"), drop = FALSE]
+
+ins_model <- lm(BMI ~ ., data = entrenamiento)
+summary(ins_model)
+# entrenamiento del modelo
+train.control <- trainControl(method = "cv", number = 10 )
+model <- train(BMI ~ ., data = entrenamiento, method = "lm",
+               trControl = train.control)
+# Summarize the results
+print(model)
+
+```
+Experiments 2 and 3 are done with the same programming base but the excluded variables are changed according to the model, in this case the variables of **BMI**, **MenHlth** and **PdysHlth** will be analyzed, obtaining as a result:
+
+*Model 1:*
+
+-   RMSE (Root Mean Squared Error): 6.160693
+-   R-squared: 0.1307229
+-   MAE (Mean Absolute Error): 4.302126
+
+*Model 2:*
+
+-   RMSE (Root Mean Squared Error): 6.15221 
+-   R-squared: 0.1418412
+-   MAE (Mean Absolute Error): 4.300093
+
+*Model 3:*
+
+-   RMSE (Root Mean Squared Error): 6.182873 
+-   R-squared:  0.132676
+-   MAE (Mean Absolute Error): 4.295338
+
+
+The lowest RMSE is achieved by *Model 2*, indicating that it has the smallest average prediction error.
+
+The highest R-squared value is also observed in *Model 1*, which means it explains the most variance in the data.
+
+The lowest MAE is also obtained by *Model 3*, indicating that it has the smallest absolute prediction errors.
+
+According to these parameters, **Model 2** would be the best, since it apart from having the lowest RMSE, has the second lowest MAE, which together suggest that it provides the best predictive performance for predicting BMI.
+
+**Regresión lineal MentHlth**
+
+In this model the variable **MentHlth** will be analyzed, it was obtained as a result in each model (experiment):
+
+*Model 1:*
+
+-   RMSE (Root Mean Squared Error): 8.407564e-15
+-   R-squared: 1
+-   MAE (Mean Absolute Error): 5.091305e-15
+
+*Model 2:*
+
+-   RMSE (Root Mean Squared Error): 1.254807e-14 
+-   R-squared: 1
+-   MAE (Mean Absolute Error): 7.763355e-15
+
+*Model 3:*
+
+-   RMSE (Root Mean Squared Error): 9.491477e-15
+-   R-squared:  1
+-   MAE (Mean Absolute Error): 5.830366e-15
+
+ The lowest RMSE is achieved by *Model 3*, indicating that it has the smallest average prediction error.
+
+R-squared value equal in all experiments.
+
+The lowest MAE is also obtained by *Model 2*, indicating that it has the smallest absolute prediction errors.
+
+
+
