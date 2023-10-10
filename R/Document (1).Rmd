@@ -10,6 +10,14 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{r  message=FALSE}
+library(tidyverse)
+library(caret)
+library(class)
+library(gmodels)
+library(psych)
+```
+
 ## Introduction
 
 This report presents an exploratory analysis and predictive models performed on a health-related dataset "diabetes_012_health_indicators_BRFSS2015.csv". The analysis includes classification techniques using the K-NN algorithm and linear regression models to predict body mass index (BMI), mental health (MentHlth) and physical health (PhysHlth). Multiple experiments were conducted to assess the accuracy of the models and determine the most influential characteristics.
@@ -65,7 +73,7 @@ The "Age" variable shows a normal distribution, meaning that the ages are fairly
 
 On the other hand, BMI has a distribution skewed to the left, indicating that most people have lower Body Mass Index values. This suggests that there is a concentration of individuals with a lower BMI in the sample.
 
-## Second part KNN 
+## Second part KNN
 
 ### KNN Models and Experiments to Find Diabetes
 
@@ -157,6 +165,7 @@ Analysis of second experiment
 knnPredict2 <- predict(knnFit2, newdata = prueba2)
 confusionMatrix(data = knnPredict2, reference = prueba2$Diabetes_012)
 ```
+
 The confusion matrix summarizes the performance of the model in classifying instances into two classes (0 and 1). In it, the rows represent the predicted classes (0 and 1), while the columns represent the actual classes (also 0 and 1). The four values in the matrix indicate True Negatives (TN, 238 instances correctly predicted as 0), False Positives (FP, 76 instances incorrectly predicted as 1), False Negatives (FN, 136 instances incorrectly predicted as 0), and True Positives (TP , 300 instances correctly predicted as 1). The accuracy of the model is 71.73%, which means that 71.73% of the predictions made by the model are correct, thus evaluating the overall accuracy of the model. In this case, Kappa is 0.4344, a better value than in the previous experiment.
 
 Sensitivity: Sensitivity, also known as the True Positive Rate or Recall, is 63.64%. It represents the proportion of actual positive cases (diabetes) correctly predicted by the model.
@@ -165,7 +174,7 @@ Specificity: Specificity is 79.79%, indicating the proportion of actual negative
 
 **Tercer experimento**
 
-In this part of the code, cross-validation is performed with 10 folds (specified by *`number = 10`) and repeated 3 times (specified by *`repeats = 3`**). This approach is known as "repeated cross-validation" and is used to obtain a more robust estimate of model performance by repeatedly splitting the data into entrenamiento and prueba sets and averaging the results. Now excluding the "PhysHlth", "Fruits", "ChoclCheck", "MentHlth", "Veggies" variables, which I do not consider to contribute to the results.
+In this part of the code, cross-validation is performed with 10 folds (specified by *`number = 10`) and repeated 3 times (specified by* `repeats = 3`\*\*). This approach is known as "repeated cross-validation" and is used to obtain a more robust estimate of model performance by repeatedly splitting the data into entrenamiento and prueba sets and averaging the results. Now excluding the "PhysHlth", "Fruits", "ChoclCheck", "MentHlth", "Veggies" variables, which I do not consider to contribute to the results.
 
 ```{r results= FALSE}
 predictors_to_remove2 <- c("PhysHlth", "Fruits","ChoclCheck", "MentHlth","Veggies")
@@ -185,33 +194,28 @@ Analysis of 3 experiment
 knnPredict3 <- predict(knnFit3, newdata = prueba3)
 confusionMatrix(data = knnPredict3, reference = prueba3$Diabetes_012)
 ```
+
 The confusion matrix summarizes the performance of the model in classifying instances into two classes (0 and 1). In it, the rows represent the predicted classes (0 and 1), while the columns represent the actual classes (also 0 and 1). The four values in the matrix indicate True Negatives (TN, 239 instances correctly predicted as 0), False Positives (FP, 81 instances incorrectly predicted as 1), False Negatives (FN, 135 instances incorrectly predicted as 0), and True Positives (TP , 295 instances correctly predicted as 1). The accuracy of the model is 71.2%, which means that 71.2% of the predictions made by the model are correct, thus evaluating the overall accuracy of the model.
 
-**Conclusion**
-In model 2 a better Kappa is obtained (Kappa: 43.44%), also model 2 has the highest value in accuracy and specificity (71.73% and 79.79%, respectively), in terms of sensitivity model 1 is the best.
+**Conclusion** In model 2 a better Kappa is obtained (Kappa: 43.44%), also model 2 has the highest value in accuracy and specificity (71.73% and 79.79%, respectively), in terms of sensitivity model 1 is the best.
 
 **HeartDiseaseaseorAttack**
 
-For the model where the variable was **HeartDiseaseaseorAttack**, 3 experiments were done, which gave different results, in each experiment different variables were removed and the programming logic was the same as that of the **Diabetes_012** model. Obtaining as a result: 
- 
- [[for more information about the code,  lines 87 to 147, click on the following link: https://github.com/igtoj/JennyferTorres_A2/blob/main/R/Activity_A2.R]]
-**Modelo 1**
-All variables except the one to be analyzed were taken into account.
+For the model where the variable was **HeartDiseaseaseorAttack**, 3 experiments were done, which gave different results, in each experiment different variables were removed and the programming logic was the same as that of the **Diabetes_012** model. Obtaining as a result:
+
+[[for more information about the code, lines 87 to 147, click on the following link: <https://github.com/igtoj/JennyferTorres_A2/blob/main/R/Activity_A2.R>]] **Modelo 1** All variables except the one to be analyzed were taken into account.
 
 -   Accuracy: 73.2%
 
 -   Kappa: 0.4628
 
-
-**Modelo 2**
-The variables ("AnyHealthcare", "NoDocbcCost", "DiffWalk", "Education", "Income") were disregarded.
+**Modelo 2** The variables ("AnyHealthcare", "NoDocbcCost", "DiffWalk", "Education", "Income") were disregarded.
 
 -   Accuracy: 74%
 
 -   Kappa: 0.4788
 
-**Modelo 3**
-The variables ("HvyAlcoholConsump", "Fruits","ChoclCheck", "MentHlth","Veggies") were disregarded.
+**Modelo 3** The variables ("HvyAlcoholConsump", "Fruits","ChoclCheck", "MentHlth","Veggies") were disregarded.
 
 -   Accuracy: 74.67%
 
@@ -221,27 +225,23 @@ Model 2 also performs well and model 1 is slightly less accurate. However, model
 
 **Sex**
 
-For the model where the variable was **HeartDiseaseaseorAttack** and **Diabetes_012**, 3 experiments were done, which gave different results, in each experiment different variables were removed and the programming logic was the same as that of the **Sex** model. Obtaining as a result: 
- 
- [[for more information about the code,  lines 150 to 210, click on the following link: https://github.com/igtoj/JennyferTorres_A2/blob/main/R/Activity_A2.R]]
- 
-**Modelo 1**
-All variables except the one to be analyzed were taken into account.
+For the model where the variable was **HeartDiseaseaseorAttack** and **Diabetes_012**, 3 experiments were done, which gave different results, in each experiment different variables were removed and the programming logic was the same as that of the **Sex** model. Obtaining as a result:
+
+[[for more information about the code, lines 150 to 210, click on the following link: <https://github.com/igtoj/JennyferTorres_A2/blob/main/R/Activity_A2.R>]]
+
+**Modelo 1** All variables except the one to be analyzed were taken into account.
 
 -   Accuracy: 60.9%
 
 -   Kappa: 0.21.67
 
-
-**Modelo 2**
-The variables ("Age", "PhysActivity", "AnyHealthcare", "NoDocbcCost", "DiffWalk") were disregarded.
+**Modelo 2** The variables ("Age", "PhysActivity", "AnyHealthcare", "NoDocbcCost", "DiffWalk") were disregarded.
 
 -   Accuracy: 56.4%
 
 -   Kappa: 0.1302
 
-**Modelo 3**
-The variables( "Fruits", "Veggies", "ChoclCheck", "MentHlth","HvyAlcoholConsump") were disregarded.
+**Modelo 3** The variables( "Fruits", "Veggies", "ChoclCheck", "MentHlth","HvyAlcoholConsump") were disregarded.
 
 -   Accuracy: 55.87%
 
@@ -249,10 +249,9 @@ The variables( "Fruits", "Veggies", "ChoclCheck", "MentHlth","HvyAlcoholConsump"
 
 Model 2 also performs well and model 3 is slightly less accurate. However, model 1 obtains the best results with the highest accuracy and Kappa, making it the recommended choice for this classification problem.
 
-
 **regresion lineal modelo BMI**
 
-This part of the code has aspects such as: 
+This part of the code has aspects such as:
 
 **Data Sampling**: 3000 rows are randomly selected from the dataset and stored in data_estratificada2.
 
@@ -286,9 +285,10 @@ model <- train(BMI ~ ., data = entrenamiento, method = "lm",
 print(model)
 
 ```
+
 Experiments 2 and 3 are done with the same programming base but the excluded variables are changed according to the model, in this case the variables of **BMI**, **MenHlth** and **PdysHlth** will be analyzed, obtaining as a result:
 
-[[for more information about the code,  lines 212 to 265, click on the following link: https://github.com/igtoj/JennyferTorres_A2/blob/main/R/Activity_A2.R]]
+[[for more information about the code, lines 212 to 265, click on the following link: <https://github.com/igtoj/JennyferTorres_A2/blob/main/R/Activity_A2.R>]]
 
 *Model 1:*
 
@@ -298,16 +298,15 @@ Experiments 2 and 3 are done with the same programming base but the excluded var
 
 *Model 2:*
 
--   RMSE (Root Mean Squared Error): 6.15221 
+-   RMSE (Root Mean Squared Error): 6.15221
 -   R-squared: 0.1418412
 -   MAE (Mean Absolute Error): 4.300093
 
 *Model 3:*
 
--   RMSE (Root Mean Squared Error): 6.182873 
--   R-squared:  0.132676
+-   RMSE (Root Mean Squared Error): 6.182873
+-   R-squared: 0.132676
 -   MAE (Mean Absolute Error): 4.295338
-
 
 The lowest RMSE is achieved by *Model 2*, indicating that it has the smallest average prediction error.
 
@@ -319,7 +318,7 @@ According to these parameters, **Model 2** would be the best, since it apart fro
 
 **Regresión lineal MentHlth**
 
-[[for more information about the code,  lines 269 to 322, click on the following link: https://github.com/igtoj/JennyferTorres_A2/blob/main/R/Activity_A2.R]]
+[[for more information about the code, lines 269 to 322, click on the following link: <https://github.com/igtoj/JennyferTorres_A2/blob/main/R/Activity_A2.R>]]
 
 In this model the variable **MentHlth** will be analyzed, it was obtained as a result in each model (experiment):
 
@@ -338,7 +337,7 @@ In this model the variable **MentHlth** will be analyzed, it was obtained as a r
 *Model 3:*
 
 -   RMSE (Root Mean Squared Error): 6.618564
--   R-squared:  0.1950633
+-   R-squared: 0.1950633
 -   MAE (Mean Absolute Error): 4.014207
 
 The lowest RMSE is achieved by *Model 2*, indicating that it has the smallest average prediction error.
@@ -349,9 +348,7 @@ The lowest MAE is also obtained by *Model 3*, indicating that it has the smalles
 
 According to these parameters, **Model 2** would be the best, since it apart from having the lowest RMSE, has the second lowest MAE, which together suggest that it provides the best predictive performance for predicting BMI.
 
-
-**Linear regression model PhysHlth**
-[[for more information about the code,  lines 325 to 378, click on the following link: https://github.com/igtoj/JennyferTorres_A2/blob/main/R/Activity_A2.R]]
+**Linear regression model PhysHlth** [[for more information about the code, lines 325 to 378, click on the following link: <https://github.com/igtoj/JennyferTorres_A2/blob/main/R/Activity_A2.R>]]
 
 In this model the variable **PhysHlth** will be analyzed, it was obtained as a result in each model (experiment):
 
@@ -370,7 +367,7 @@ In this model the variable **PhysHlth** will be analyzed, it was obtained as a r
 *Model 3:*
 
 -   RMSE (Root Mean Squared Error): 6.965291
--   R-squared:  0.39296
+-   R-squared: 0.39296
 -   MAE (Mean Absolute Error): 4.683361
 
 The lowest RMSE is achieved by *Model 1*, indicating that it has the smallest average prediction error.
@@ -382,4 +379,3 @@ The lowest MAE is also obtained by *Model 2*, indicating that it has the smalles
 According to these parameters, **Model 1** would be the best, since it apart from having the lowest RMSE, has the second lowest MAE, which together suggest that it provides the best predictive performance for predicting BMI.
 
 Thank you very much :3
-
