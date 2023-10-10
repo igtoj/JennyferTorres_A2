@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introduction
 
-Three models will be developed using KNN, linear and multilinear regression with the data from the dataset "diabetes_012_health_indicators_BRFSS2015.csv", in order to choose the model that gives the best results as required. The dataset has variables related to health, such as diseases (diabetes, hypertension, cholesterol, coronary heart disease), aspects related to mass and height (BMI), characteristics such as smoking, physical activity, vegetable or fruit consumption, gender, age, stroke, physical, mental health and other such variables.
+This report presents an exploratory analysis and predictive models performed on a health-related dataset "diabetes_012_health_indicators_BRFSS2015.csv". The analysis includes classification techniques using the K-NN algorithm and linear regression models to predict body mass index (BMI), mental health (MentHlth) and physical health (PhysHlth). Multiple experiments were conducted to assess the accuracy of the models and determine the most influential characteristics.
 
 ###### For more information about the dataset, please refer to: <https://www.kaggle.com/datasets/alexteboul/diabetes-health-indicators-dataset>
 
