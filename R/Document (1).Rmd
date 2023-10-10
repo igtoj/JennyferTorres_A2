@@ -65,7 +65,7 @@ The "Age" variable shows a normal distribution, meaning that the ages are fairly
 
 On the other hand, BMI has a distribution skewed to the left, indicating that most people have lower Body Mass Index values. This suggests that there is a concentration of individuals with a lower BMI in the sample.
 
-## Second part KNN MODEL
+## Second part KNN 
 
 ### KNN Models and Experiments to Find Diabetes
 
@@ -128,7 +128,7 @@ knnPredict <- predict(knnFit, newdata = prueba)
 confusionMatrix(data = knnPredict, reference = prueba$Diabetes_012)
 ```
 
-The confusion matrix summarizes the performance of the model in classifying instances into two classes (0 and 1). In it, the rows represent the predicted classes (0 and 1), while the columns represent the actual classes (also 0 and 1). The four values in the matrix indicate True Negatives (TN, 330 instances correctly predicted as 0), False Positives (FP, 122 instances incorrectly predicted as 1), False Negatives (FN, 116 instances incorrectly predicted as 0), and True Positives (TP , 332 instances correctly predicted as 1). The accuracy of the model is 73.56%, which means that 73.56% of the predictions made by the model are correct, thus evaluating the overall accuracy of the model.
+The confusion matrix summarizes the performance of the model in classifying instances into two classes (0 and 1). In it, the rows represent the predicted classes (0 and 1), while the columns represent the actual classes (also 0 and 1). The four values in the matrix indicate True Negatives (TN, 252 instances correctly predicted as 0), False Positives (FP, 91 instances incorrectly predicted as 1), False Negatives (FN, 122 instances incorrectly predicted as 0), and True Positives (TP , 285 instances correctly predicted as 1). The accuracy of the model is 71.6%, which means that 71.6% of the predictions made by the model are correct, thus evaluating the overall accuracy of the model.
 
 Kappa Index: The Kappa index (Kappa) is a measure of inter-rater agreement, in this case, the agreement between the model predictions and the actual classes. Adjust the precision based on the possibility of random agreement and take values between -1 and 1. In this case, Kappa is 0.4319
 
@@ -150,6 +150,103 @@ knnFit2 <- train(Diabetes_012 ~ ., data = entrenamiento2, method = "knn", trCont
 plot(knnFit2)
 ```
 
+Analysis of second experiment
+
+```{r results= FALSE}
+# Crear predicciones- confusion matrix
+knnPredict2 <- predict(knnFit2, newdata = prueba2)
+confusionMatrix(data = knnPredict2, reference = prueba2$Diabetes_012)
+```
+The confusion matrix summarizes the performance of the model in classifying instances into two classes (0 and 1). In it, the rows represent the predicted classes (0 and 1), while the columns represent the actual classes (also 0 and 1). The four values in the matrix indicate True Negatives (TN, 238 instances correctly predicted as 0), False Positives (FP, 76 instances incorrectly predicted as 1), False Negatives (FN, 136 instances incorrectly predicted as 0), and True Positives (TP , 300 instances correctly predicted as 1). The accuracy of the model is 71.73%, which means that 71.73% of the predictions made by the model are correct, thus evaluating the overall accuracy of the model. In this case, Kappa is 0.4344, a better value than in the previous experiment.
+
+Sensitivity: Sensitivity, also known as the True Positive Rate or Recall, is 63.64%. It represents the proportion of actual positive cases (diabetes) correctly predicted by the model.
+
+Specificity: Specificity is 79.79%, indicating the proportion of actual negative cases (no diabetes) correctly predicted by the model.
+
+**Tercer experimento**
+
+In this part of the code, cross-validation is performed with 10 folds (specified by *`number = 10`) and repeated 3 times (specified by *`repeats = 3`**). This approach is known as "repeated cross-validation" and is used to obtain a more robust estimate of model performance by repeatedly splitting the data into entrenamiento and prueba sets and averaging the results. Now excluding the "PhysHlth", "Fruits", "ChoclCheck", "MentHlth", "Veggies" variables, which I do not consider to contribute to the results.
+
+```{r results= FALSE}
+predictors_to_remove2 <- c("PhysHlth", "Fruits","ChoclCheck", "MentHlth","Veggies")
+entrenamiento3 <- entrenamiento2[, !(names(entrenamiento2) %in% predictors_to_remove2)]
+prueba3 <- prueba2[, !(names(prueba2) %in% predictors_to_remove2)]
+
+control2 <- trainControl(method = "repeatedcv", number = 10, repeats = 3)
+knnFit3 <- train(Diabetes_012 ~ ., data = entrenamiento3, method = "knn", trControl = control2
+          , preProcess = c("range") # c("center", "scale") for z-score
+          , tuneLength = 20)
+plot(knnFit3)
+```
+
+Analysis of 3 experiment
+
+```{r results= FALSE}
+knnPredict3 <- predict(knnFit3, newdata = prueba3)
+confusionMatrix(data = knnPredict3, reference = prueba3$Diabetes_012)
+```
+The confusion matrix summarizes the performance of the model in classifying instances into two classes (0 and 1). In it, the rows represent the predicted classes (0 and 1), while the columns represent the actual classes (also 0 and 1). The four values in the matrix indicate True Negatives (TN, 239 instances correctly predicted as 0), False Positives (FP, 81 instances incorrectly predicted as 1), False Negatives (FN, 135 instances incorrectly predicted as 0), and True Positives (TP , 295 instances correctly predicted as 1). The accuracy of the model is 71.2%, which means that 71.2% of the predictions made by the model are correct, thus evaluating the overall accuracy of the model.
+
+**Conclusion**
+In model 2 a better Kappa is obtained (Kappa: 43.44%), also model 2 has the highest value in accuracy and specificity (71.73% and 79.79%, respectively), in terms of sensitivity model 1 is the best.
+
+**HeartDiseaseaseorAttack**
+
+For the model where the variable was **HeartDiseaseaseorAttack**, 3 experiments were done, which gave different results, in each experiment different variables were removed and the programming logic was the same as that of the **Diabetes_012** model. Obtaining as a result: 
+ 
+ [[for more information about the code,  lines 87 to 147, click on the following link: https://github.com/igtoj/JennyferTorres_A2/blob/main/R/Activity_A2.R]]
+**Modelo 1**
+All variables except the one to be analyzed were taken into account.
+
+-   Accuracy: 73.2%
+
+-   Kappa: 0.4628
 
 
+**Modelo 2**
+The variables ("AnyHealthcare", "NoDocbcCost", "DiffWalk", "Education", "Income") were disregarded.
 
+-   Accuracy: 74%
+
+-   Kappa: 0.4788
+
+**Modelo 3**
+The variables ("HvyAlcoholConsump", "Fruits","ChoclCheck", "MentHlth","Veggies") were disregarded.
+
+-   Accuracy: 74.67%
+
+-   Kappa: 0.4933
+
+Model 2 also performs well and model 1 is slightly less accurate. However, model 3 obtains the best results with the highest accuracy and Kappa, making it the recommended choice for this classification problem.
+
+**Sex**
+For the model where the variable was **HeartDiseaseaseorAttack** and **Diabetes_012**, 3 experiments were done, which gave different results, in each experiment different variables were removed and the programming logic was the same as that of the **Sex** model. Obtaining as a result: 
+ 
+ [[for more information about the code,  lines 150 to 210, click on the following link: https://github.com/igtoj/JennyferTorres_A2/blob/main/R/Activity_A2.R]]
+ 
+**Modelo 1**
+All variables except the one to be analyzed were taken into account.
+
+-   Accuracy: 60.9%
+
+-   Kappa: 0.21.67
+
+
+**Modelo 2**
+The variables ("Age", "PhysActivity", "AnyHealthcare", "NoDocbcCost", "DiffWalk") were disregarded.
+
+-   Accuracy: 56.4%
+
+-   Kappa: 0.1302
+
+**Modelo 3**
+The variables( "Fruits", "Veggies", "ChoclCheck", "MentHlth","HvyAlcoholConsump") were disregarded.
+
+-   Accuracy: 55.87%
+
+-   Kappa: 0.1191
+
+Model 2 also performs well and model 3 is slightly less accurate. However, model 1 obtains the best results with the highest accuracy and Kappa, making it the recommended choice for this classification problem.
+
+
+**regresion lineal modelo BMI**
